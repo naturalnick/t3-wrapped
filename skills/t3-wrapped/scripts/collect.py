@@ -460,7 +460,12 @@ def main():
     model_month = defaultdict(Counter)
     for p in prompts:
         model_month[p[0].month][p[4]] += 1
-    effort = Counter(r["effort"] for r in runs.values() if r["effort"] and in_range(r["at"]))
+    effort = Counter()
+    effort_model = defaultdict(Counter)
+    for r in runs.values():
+        if r["effort"] and in_range(r["at"]) and not skip(r["thread"]):
+            effort[r["effort"].lower()] += 1
+            effort_model[r["model"]][r["effort"].lower()] += 1
 
     proj_runs = Counter()
     proj_days = defaultdict(set)
@@ -579,7 +584,8 @@ def main():
             by_provider=top_list(provider_runs, 8),
             by_month=[dict(month=m, models=dict(model_month[m])) for m in range(1, 13) if model_month[m]],
             by_week=[dict(start=w.isoformat(), models=dict(model_week[w])) for w in weeks],
-            effort=top_list(effort, 6),
+            effort=dict(effort),
+            effort_by_model={m: dict(c) for m, c in effort_model.items()},
             first=min(prompts)[4],
             last=max(prompts)[4],
         ),

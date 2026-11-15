@@ -29,8 +29,8 @@ SERIES = ["#3987e5", "#d95926", "#199e70", "#c98500", "#d55181", "#0ca30c", "#90
 OTHER = "#6b6a66"
 HEAT = ["#0d366b", "#104281", "#184f95", "#1c5cab", "#256abf", "#2a78d6", "#3987e5", "#5598e7", "#6da7ec", "#86b6ef", "#b7d3f6"]
 
-ORDER = ["cover", "origin", "prompts", "calendar", "clock", "agent_time", "models", "model_timeline", "projects", "code",
-         "hands", "apologies", "words", "habits", "records", "persona", "summary"]
+ORDER = ["cover", "origin", "prompts", "calendar", "clock", "models", "model_timeline", "effort", "apologies", "agent_time",
+         "code", "hands", "projects", "words", "habits", "records", "persona", "summary"]
 
 e = html.escape
 
@@ -377,6 +377,38 @@ def card_hands(d, ctx):
                         ("subagents", compact(a["subagents"]))])
             + (f'<div class="panel">{bars(a["top_commands"][:3], color=ctx["accent"], fmt=compact)}</div>' if a["top_commands"] else ""))
     return copy, body
+
+
+# Display order only, lowest to highest. Shared values (low/medium/high) merge; provider-only ends
+# (Codex minimal/xhigh, Claude max) stay separate bars, and unknown values sort last.
+EFFORT_LADDER = ["none", "minimal", "low", "medium", "high", "xhigh", "max"]
+EFFORT_LABELS = {"none": "None", "minimal": "Minimal", "low": "Low", "medium": "Medium", "high": "High",
+                 "xhigh": "Extra high", "max": "Max"}
+
+
+def card_effort(d, ctx):
+    eff = d["models"].get("effort") or {}
+    total = sum(eff.values())
+    if total < 20:
+        return None
+    rank = lambda k: EFFORT_LADDER.index(k) if k in EFFORT_LADDER else len(EFFORT_LADDER)  # noqa: E731
+    levels = sorted(eff, key=rank)
+    top = max(eff, key=eff.get)
+    items = [dict(name=k, label=EFFORT_LABELS.get(k, k.capitalize()), value=eff[k] / total) for k in levels]
+    # Call out the model the user ran differently from their usual level, if any stands out.
+    note, best = "", 0
+    for m, c in (d["models"].get("effort_by_model") or {}).items():
+        turns = sum(c.values())
+        if turns < 10:
+            continue
+        other = max((k for k in c if k != top), key=c.get, default=None)
+        if other and c[other] / turns >= .25 and c[other] / turns > best:
+            best = c[other] / turns
+            note = f"{model_name(m)} ran on {EFFORT_LABELS.get(other, other).lower()} {pct(best)} of the time"
+    copy = dict(kicker="Your effort setting", title=f"on {pct(eff[top] / total)} of turns", note=note)
+    colors = {k: (ctx["accent"] if k == top else "#5a5a55") for k in levels}
+    return copy, (f'<div class="hero">{e(EFFORT_LABELS.get(top, top.capitalize()))}</div>'
+                  f'<div class="panel">{bars(items, colors=colors, fmt=pct, max_items=7)}</div>')
 
 
 def card_apologies(d, ctx):

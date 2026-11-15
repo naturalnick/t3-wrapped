@@ -97,6 +97,7 @@ This opens a new X post in the browser and the cards folder with every card sele
 | agent_time | Agent hours, peak parallel agents, tokens, API-price estimate |
 | models | Share of prompts per model, provider split |
 | model_timeline | Model mix by month (or week) |
+| effort | Most-used effort / reasoning level, share of turns at each level, and the model the user ran differently |
 | projects | Project count and how prompts spread across them (no names) |
 | code | Lines added/removed, files, languages |
 | hands | Commands, tool calls, web searches, subagents, favorite command |
@@ -115,4 +116,5 @@ This opens a new X post in the browser and the cards folder with every card sele
 - **Receipts** (persona input only, no card): of the turns that edited files, the share that also ran a test, build, lint or typecheck, or took a screenshot or preview in the same turn. It misses checks done in a later turn, another thread, or by hand, so it is a floor; never present it as a grade.
 - **Model per prompt**: the model of the run the prompt started. Imported history (only with `--include-imported`) uses the thread's last selected model.
 - **Activity ratios** (interrupt rate, full-access share, receipts) use only T3-started threads, even with `--include-imported`. Prompt-based stats and the persona use whatever is included.
+- **Effort**: the effort (Claude) or reasoning-effort (Codex) setting each turn ran with. Shared levels (low, medium, high) count together; provider-only levels (Codex minimal and extra high, Claude max) get their own bars. Bars are ordered lowest to highest for display; that order doesn't equate levels across providers. It records the setting, not whether the user changed it from the default.
 - **Persona**: the highest-scoring of 11 archetypes (`persona.scores`). You may reword the blurb in captions, but keep the archetype.
