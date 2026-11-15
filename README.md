@@ -23,4 +23,6 @@ Then ask for "my T3 Wrapped".
 skills/t3-wrapped/scripts/wrapped.sh 2026 --handle @you   # → ~/t3-wrapped/2026/cards/*.png
 ```
 
+To post: `skills/t3-wrapped/scripts/share.py ~/t3-wrapped/2026` opens a new X post and selects every card in Finder. Drag them in and click Post.
+
 Requires Python 3.9+ and Chrome, Chromium, Edge or Brave for the PNG export.

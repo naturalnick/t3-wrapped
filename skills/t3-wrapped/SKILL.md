@@ -77,11 +77,13 @@ Fix by shortening a caption or dropping the card, then re-render. Do not hand of
 
 ## 7. Hand off
 
-Give the user:
-- the `cards/` folder path, and the card order you recommend
-- a suggested post (at most 280 characters) that leads with their persona and best stat
+Give the user the `cards/` folder path and offer to open X:
 
-Point out that X's per-post image limit decides how many fit in one post. Never post or upload anything yourself.
+```sh
+python3 scripts/share.py ~/t3-wrapped/2026
+```
+
+This opens a new X post in the browser and the cards folder with every card selected in deck order. X can't attach images from a link, so the user drags the selected cards into the post (X allows up to 20) and clicks Post. Never post or upload anything yourself.
 
 ## Cards
 
