@@ -5,7 +5,7 @@ Your year with coding agents, as a deck of share cards. It reads T3 Code's local
 ## Paste this into T3
 
 ```
-Make my T3 Code Wrapped. Clone https://github.com/OWNER/t3-wrapped into a temporary folder, read skills/t3-wrapped/SKILL.md, and follow it step by step. Run everything locally.
+Make my T3 Code Wrapped. Clone https://github.com/naturalnick/t3-wrapped into a temporary folder, read skills/t3-wrapped/SKILL.md, and follow it step by step. Run everything locally.
 ```
 
 ## Or install it as a skill
